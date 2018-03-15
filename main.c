@@ -3,22 +3,228 @@
 #include <string.h>
 #include <stdbool.h>
 
+/*
+    Declaration de la constante qui définit
+    la taille maximale de la chaine que l'utilisateur
+    pourra entrer.
+*/
 #define N 100
 
+/*
+@autors     :   Thierno Mamadou Boye DIALLO
+                Codé Kébé
+                Moustapha LÔ
+                Saliou SENE
+
+@date       :   15/03/2018
+
+Comments    :   Ce programme permet d'analyser et d'évaluer une expression arithmétique donnée par l'utilisateur.
+                Il utilise une methode qui consiste à lire l'expression saisie par l'utilisateur caractère par caractère
+                et du début vers la fin.
+                L'agorithme utilise principalement la grammaire BNF(Backus-Naur Form) ou grammaire non contextuelle.
+*/
+
+////////////////////////////////////////////////////////////
+//////////// DECLARATION DES FONCTIONS UTILISEES ///////////
+////////////////////////////////////////////////////////////
+
+/*
+    -> DECLARATION DE LA FONCTION @lire_utile(char* str) :
+    @lire_utile() permet de lire convenablement la chaine
+    entrèe par l'utilisateur caratère par caractère
+    jusqu'à ce qu'il rencontre le caractère '='
+    en reiterant toujours l'appel de @getchar().
+*/
+void lire_utile(char* str);
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @expression() :
+    Cette fonction permet non seulement de reconnaitre une expression
+    mais aussi de renvoyer sa valeur au cas echéan.
+    C'est le point d'entré et de sortie de notre algorithme BNF.
+    Du fait de la manière dont une expression est constituèe,
+    on trouve en son sein l'appel des fonctions @terme(), @operateur_additif() et la fonction @expression() elle même.
+*/
 int expression();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @terme() :
+    Cette fonction permet non seulement de reconnaitre un terme
+    mais aussi de renvoyer sa valeur au cas echéan.
+    Elle est utilisée par la fonction @expression pour verifier
+    (éventuellement evaluer) qu'un de ces membres est bien un terme.
+    Du fait de la manière dont un terme est constituè,
+    on trouve en son sein l'appel des fonctions @facteur(), @operateur_multiplicatif() et la fonction @terme() elle même.
+*/
 int terme();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @facteur()
+    Cette fonction permet non seulement de reconnaitre un facteur
+    mais auusi de renvoyer sa valeur au cas echéan.
+    Utilisé par la fonction @terme() pour verifier qu'il est bien constitué de facteur,
+    cette fonction est principalement caracterisée de l'appel de la fonction @nombre() et @expression()
+    pour verifier que nous sommes bien dans le cas d'une expression se trouvant entre parentese
+    si la fonction @nombre() n'affirme pas le cas echean.
+*/
 int facteur();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @nombre() :
+    Cette fonction permet de verifier si un ensembre de caractère est bien un nombre
+    et de renvoyer sa valeur au cas echéan.
+    Elle est utilisée par la fonction @facteur() pour verifier
+    qu'un facteur est bien un nombre.
+    Cette fonction appel principalement la fonction @chiffre()
+*/
 int nombre();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @chiffre() :
+    Elle est utilisée pour verifier si effectivement nous avons un chiffre.
+    Elle renvoie la @true si c'est cas et @false au cas non echéan.
+    Elle est utilisée par la fonction @nombre() pour vérifier
+    que ce dernier est bien constitué de chiffres.
+    Elle se contante juste comparer la valeur de la variable @calu avec un ensemble de valeur
+    et de revoyer @true s'il y a au mois une correspondance ou @false sinon
+*/
 int chiffre();
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @operateur_additif() :
+    Cette fonction permet de verifier si un caractere est bien
+    un operateur-additif (un '+' ou un '-').
+    Elle renvoi le carractere correspondant si celui la est egale
+    à l'un de ces deux operateur-additif ou la constante @INVALID_CHAR sinon.
+    Elle est utilisée uniquement par la fonction @expression() pour verifier
+    que ces differantes termes sont bien separés par un des operateur-additif
+*/
 char operateur_additif();
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @operateur_multiplicatif() :
+    Cette fonction permet de verifier si un caractere est bien
+    un operateur-multiplicatif (un '*' ou un '/').
+    Elle renvoi le carractere correspondant si celui la est egale
+    à l'un de ces deux operateur-multiplicatif ou la constante @INVALID_CHAR sinon.
+    Elle est utilisée uniquement par la fonction @terme() pour verifier
+    que ces differantes facteurs sont bien separés par un des operateur-multiplicatif
+*/
 char operateur_multiplicatif();
+
+
+/*
+    -> DECLARATION DE LA FONCTION @car_suivant() :
+    Cette fonction permet tout simplement d'aller au caractere suivant
+    de la chaine de l'expression que nous sommmes entrain d'analyser.
+    Elle renvoie @true si l'avancé s'est bien passer ou @false sinon (si nous sommes à la fin de la chaine).
+*/
 int car_suivant();
+
+
+/*
+    -> DECLARATION DE LA FONCTION @fin_expression() :
+    Cette fonction est utilisée pour savoir si nous sommes à la fin de l'expression.
+    Elle revoie @true si c'est le cas ou @false sinon
+*/
 int fin_expression();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @enlever_blanc() :
+    Elle permet de sauter les espaces blancs jusqu'à ce qu'on trouve
+    un caractère graphique ou qu'on atteigne la fin de la chaine.
+    Elle utilise pricipalement la fonction @car_suivant().
+    Elle n'a pas de valeur de retour.
+*/
 void enlever_blanc();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @parentese_ouvrante() :
+    Cette fonction permet de verifier si un caractere est bien
+    une parentèse ouvrante.
+    Elle revoie @true si c'est le cas ou @false sinon
+    Elle est uniquement utilisée par la fonction @facteur()
+    pour savoir si celui-ci ne commance pas par une parentèse ouvrante
+    au cas où l'appel de la fonction nombre ne donne pas une valeur concluante.
+*/
 int parentese_ouvrante();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @parentese_fermante() :
+    Cette fonction permet de verifier si un caractere est bien
+    une parentèse fermante.
+    Elle revoie @true si c'est le cas ou @false sinon
+    Elle est uniquement utilisée par la fonction @facteur()
+    pour savoir si celui-ci se termine par une parentèse fermante
+    au cas où elle a commencé par une parentèse ouvrante.
+*/
 int parentese_fermante();
 
+////////////////////////////////////////////////////////////
+//////////// DEFINITIONS DES VARIABLES GLOBALES ////////////
+////////////////////////////////////////////////////////////
 
+
+/*
+
+    ->  La variable @CHIFFRES
+        utilisée par fonction @chiffre() permet de savoir
+        si un caractère est un chiffre ou non.
+
+    ->  La variable @INVALID_CHAR
+        permet de savoir si nous avons bien un opérateur ou non.
+
+    ->  La constante @INVALID_IND permet de dire qu'un caractère
+        ou ensemble de caractère n'est pas un entier valide.
+
+    ->  La constante @INVALID_EXP permet de dire qu'un caractère
+        ou ensemble de caractère n'est pas une expression valide.
+
+    ->  Le tableau de caractère @expression_arith contiendra
+        la chaine (expression) que nous sommes entrain d'analyser.
+
+    ->  La variable caractère @calu contiendra toujours
+        le premier caractère de @expression_arith non encore examiné.
+
+    ->  La variable @taille contiendra le nombre de caractère
+        de notre expression (vu que la taille du tableau
+        n'est pas forcement atteint).
+
+    ->  @indice_calu est l'indice de la variable @calu
+        dans le tableau @expression_arith.
+
+    -> @arret est un booleen qui nous permet à tout instant
+        de savoir si l'expression peut etre valide ou pas.
+        Si elle peut etre valide elle contiendra la valeur @false
+        dans quel cas nous continuons l'analyse de l'expression.
+        Si elle ne peut plus etre valide peu importe le reste de la chaine
+        alors elle vaudra true dans quelle cas nous arretons
+        tout le treitement pour dire à l'utilisateur que
+        l'expression n'est pas valide.
+*/
 const char  CHIFFRES[10] = {'0','1','2','3','4','5','6','7','8','9'},
             ADD = '+',
             MOINS = '-',
@@ -27,85 +233,79 @@ const char  CHIFFRES[10] = {'0','1','2','3','4','5','6','7','8','9'},
             DIV = '/',
 
             INVALID_CHAR = 'x',
+
             BLANC_CHARS[4] = {9, 10, 13, 32};
+
+
 const int INVALID_INT = -1, INVALID_EXP = -5;
-char expression_arith[N] = "", calu;
-int taille = 0, indice_calu = 0;
-bool arret = false;
-//int parentese_non_fermee = 0;
+char expression_arith[N], calu;
+int taille, indice_calu;
+bool arret;
 
 
+////////////////////////////////////////////////////////////
+//////////////// DEFINITIONS DES FONCTIONS /////////////////
+////////////////////////////////////////////////////////////
+
+
+/*
+    -> DEFINITION DE LA FONCTION @main() :
+    Etant le point d'entrée de notre programme,
+    c'est dans cette fonction que nous initialiserons
+    tous les variables qui en ont besoin.
+    Aussi c'est à partire de cette fonction que nous appelerons
+    la fonction @lire_utile() qui se chargera de demander à l'utilisateur
+    d'entrer la chaine puis de la lire convenablement.
+    Enfin cette fonction se chargera aussi d'afficher le resultat du programme.
+*/
 int main()
 {
-    printf("Entrer l'expression!\n");
+
+    label : printf("Entrer l'expression!\n");
+    taille = 0;
+    strncpy(expression_arith, "", N);
+    indice_calu = 0;
+    arret = false;
     lire_utile(expression_arith);
-    //printf("expression_arith : %s\n",expression_arith);
 
-
-    //TEST DE LA FONCTION NOMBRE()
-    /*int nb = nombre();
-    if(nb == INVALID_INT) printf("CECI N'EST PAS UN NOMBRE !!!!!!\n");
-    printf("______________________________________\n");
-    printf("nombre : %d\n",nb);
-    printf("calu : %c\n",calu);
-    printf("indice_calu : %d\n",indice_calu);
-    printf("______________________________________\n\n");
-    */
-
-    //TESTE DE LA FONCTION FACTEUR
-    /*int fact = facteur();
-
-    if(fact == INVALID_INT) printf("CECI N'EST PAS UN FACTEUR !!!!!!\n");
-    else if(fact == INVALID_EXP) printf("CECI N'EST PAS UNE EXPRESSION\n");
-    else printf("CECI EST UN FACTEUR\n");
-    printf("______________________________________\n");
-    printf("facteur : %d\n",fact);
-    printf("calu : %c\n",calu);
-    printf("indice_calu : %d\n",indice_calu);
-    printf("______________________________________\n\n");
-    */
-
-    //TEST DE LA FONCTION TERME
-    /*int t = terme();
-
-    if(t == INVALID_INT) printf("CECI N'EST PAS UN TERME !!!!!!\n");
-    else if(t == INVALID_EXP) printf("CECI N'EST PAS UNE EXPRESSION\n");
-    else printf("CECI EST UN TERME\n");
-    printf("______________________________________\n");
-    printf("terme = %d\n",t);
-    printf("calu : %c\n",calu);
-    printf("indice_calu : %d\n",indice_calu);
-    printf("______________________________________\n\n");
-    */
-
-    //TEST DE LA FONCTION EXPRESSION
+    if(!strcmp(expression_arith, ".")) {
+        printf("Au revoir...");
+        exit(EXIT_SUCCESS);
+    }
 
     int exp = expression();
     if(arret || indice_calu < taille) printf("arret : CECI N'EST PAS UNE EXPRESSION !!!!!!\n");
-    //if(exp == INVALID_INT) printf("INVALID_INT...\n");
-    //else if(exp == INVALID_EXP) printf("INVALID_EXP...\n");
     else printf("CECI EST UNE EXPRESSION CORRECTE\n");
+    printf("sa valeur est : %d\n",exp);
     printf("______________________________________\n");
-    printf("expression = %d\n",exp);
+    printf("expression_arith : %s\n",expression_arith);
+    printf("taille : %d\n",taille);
     printf("calu : %c\n",calu);
     printf("indice_calu : %d\n",indice_calu);
     printf("______________________________________\n\n");
+    goto label;
 }
 
 
+/*
+    -> Definition de la fonction @lire_utile() :
+
+*/
 void lire_utile(char* str){
     char c;
 
     int i = 0;
-    while(true){
+    while(i<N){
         c = getchar();
 
-        if(c == '=') break;
-
+        if(c == '='){
+            getchar(); //Ce getchar() est juste pour eliminer le caractere "à la ligne ou retour chariot" que l'utilisateur a teper pour que je puisse faire le traitement
+            break;
+        }
         str[i] = c;
         i++;
     }
-    taille = i-1;
+    taille = i;
     calu = str[0];
 }
 
@@ -133,6 +333,8 @@ int expression(){
             arret = true;
             //return INVALID_EXP;
         }
+    }else {
+        if(taille == 1 && val == INVALID_INT) arret = true;  //Ceci gère le cas où nous avons un seul caractere mais que ce caractère ne soit pas valide
     }
     return val;
 }
@@ -184,13 +386,11 @@ int facteur(){
                         //return INVALID_EXP; //Sinon c'est qu'il y a probleme et que l'expression est invalide
                     }
                 }
-
-
             }else{
                 arret = true;
                 //return INVALID_EXP; //si nous avons une parentese ouvrante juste avant la fin de l'expression cela veux tout siplement dire que l'expression n'est pas valide
             }
-        }
+        }else arret = true; //A VERIFIER!!!!!!!!!!!!!!!
     }
 
     /*if(parentese_non_fermee > 0){
