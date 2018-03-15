@@ -1,0 +1,161 @@
+
+
+////////////////////////////////////////////////////////////
+//////////// DECLARATION DES FONCTIONS UTILISEES ///////////
+////////////////////////////////////////////////////////////
+
+/*
+    -> DECLARATION DE LA FONCTION @lire_utile(char* str) :
+    @lire_utile() permet de lire convenablement la chaine
+    entrèe par l'utilisateur caratère par caractère
+    jusqu'à ce qu'il rencontre le caractère '='
+    en reiterant toujours l'appel de @getchar().
+*/
+void lire_utile(char* str);
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @expression() :
+    Cette fonction permet non seulement de reconnaitre une expression
+    mais aussi de renvoyer sa valeur au cas echéan.
+    C'est le point d'entré et de sortie de notre algorithme BNF.
+    Du fait de la manière dont une expression est constituèe,
+    on trouve en son sein l'appel des fonctions @terme(), @operateur_additif() et la fonction @expression() elle même.
+*/
+int expression();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @terme() :
+    Cette fonction permet non seulement de reconnaitre un terme
+    mais aussi de renvoyer sa valeur au cas echéan.
+    Elle est utilisée par la fonction @expression pour verifier
+    (éventuellement evaluer) qu'un de ces membres est bien un terme.
+    Du fait de la manière dont un terme est constituè,
+    on trouve en son sein l'appel des fonctions @facteur(), @operateur_multiplicatif() et la fonction @terme() elle même.
+*/
+int terme();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @facteur()
+    Cette fonction permet non seulement de reconnaitre un facteur
+    mais auusi de renvoyer sa valeur au cas echéan.
+    Utilisé par la fonction @terme() pour verifier qu'il est bien constitué de facteur,
+    cette fonction est principalement caracterisée de l'appel de la fonction @nombre() et @expression()
+    pour verifier que nous sommes bien dans le cas d'une expression se trouvant entre parentese
+    si la fonction @nombre() n'affirme pas le cas echean.
+*/
+int facteur();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @nombre() :
+    Cette fonction permet de verifier si un ensembre de caractère est bien un nombre
+    et de renvoyer sa valeur au cas echéan.
+    Elle est utilisée par la fonction @facteur() pour verifier
+    qu'un facteur est bien un nombre.
+    Cette fonction appel principalement la fonction @chiffre()
+*/
+int nombre();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @chiffre() :
+    Elle est utilisée pour verifier si effectivement nous avons un chiffre.
+    Elle renvoie la @true si c'est cas et @false au cas non echéan.
+    Elle est utilisée par la fonction @nombre() pour vérifier
+    que ce dernier est bien constitué de chiffres.
+    Elle se contante juste comparer la valeur de la variable @calu avec un ensemble de valeur
+    et de revoyer @true s'il y a au mois une correspondance ou @false sinon
+*/
+bool chiffre();
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @operateur_additif() :
+    Cette fonction permet de verifier si un caractere est bien
+    un operateur-additif (un '+' ou un '-').
+    Elle renvoi le carractere correspondant si celui la est egale
+    à l'un de ces deux operateur-additif ou la constante @INVALID_CHAR sinon.
+    Elle est utilisée uniquement par la fonction @expression() pour verifier
+    que ces differantes termes sont bien separés par un des operateur-additif
+*/
+char operateur_additif();
+
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @operateur_multiplicatif() :
+    Cette fonction permet de verifier si un caractere est bien
+    un operateur-multiplicatif (un '*' ou un '/').
+    Elle renvoi le carractere correspondant si celui la est egale
+    à l'un de ces deux operateur-multiplicatif ou la constante @INVALID_CHAR sinon.
+    Elle est utilisée uniquement par la fonction @terme() pour verifier
+    que ces differantes facteurs sont bien separés par un des operateur-multiplicatif
+*/
+char operateur_multiplicatif();
+
+
+/*
+    -> DECLARATION DE LA FONCTION @car_suivant() :
+    Cette fonction permet tout simplement d'aller au caractere suivant
+    de la chaine de l'expression que nous sommmes entrain d'analyser.
+    Elle renvoie @true si l'avancé s'est bien passer ou @false sinon (si nous sommes à la fin de la chaine).
+*/
+bool car_suivant();
+
+
+/*
+    -> DECLARATION DE LA FONCTION @fin_expression() :
+    Cette fonction est utilisée pour savoir si nous sommes à la fin de l'expression.
+    Elle revoie @true si c'est le cas ou @false sinon
+*/
+bool fin_expression();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @enlever_blanc() :
+    Elle permet de sauter les espaces blancs jusqu'à ce qu'on trouve
+    un caractère graphique ou qu'on atteigne la fin de la chaine.
+    Elle utilise pricipalement la fonction @car_suivant().
+    Elle n'a pas de valeur de retour.
+*/
+void enlever_blanc();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @parentese_ouvrante() :
+    Cette fonction permet de verifier si un caractere est bien
+    une parentèse ouvrante.
+    Elle revoie @true si c'est le cas ou @false sinon
+    Elle est uniquement utilisée par la fonction @facteur()
+    pour savoir si celui-ci ne commance pas par une parentèse ouvrante
+    au cas où l'appel de la fonction nombre ne donne pas une valeur concluante.
+*/
+bool parentese_ouvrante();
+
+
+
+/*
+    -> DECLARATION DE LA FONCTION @parentese_fermante() :
+    Cette fonction permet de verifier si un caractere est bien
+    une parentèse fermante.
+    Elle revoie @true si c'est le cas ou @false sinon
+    Elle est uniquement utilisée par la fonction @facteur()
+    pour savoir si celui-ci se termine par une parentèse fermante
+    au cas où elle a commencé par une parentèse ouvrante.
+*/
+bool parentese_fermante();
+
